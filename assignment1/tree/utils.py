@@ -10,8 +10,24 @@ def one_hot_encoding(X: pd.DataFrame) -> pd.DataFrame:
     """
     Function to perform one hot encoding on the input data
     """
-
-    pass
+    encoded = []
+    columns = X.select_dtypes(include=['object']).columns
+    for col in columns:
+        categories_unique = list(dict.fromkeys(X[col]))
+        categories_index = {cat: idx for idx,
+                            cat in enumerate(categories_unique)}
+        encoded_col = []
+        for cat in X[col]:
+            vector = [0] * len(categories_unique)
+            vector[categories_index[cat]] = 1
+            encoded_col.append(vector)
+        encoded_col_df = pd.DataFrame(
+            encoded_col, columns=[f"{col}_{cat}" for cat in categories_unique])
+        encoded.append(encoded_col_df)
+    X = X.drop(columns=columns)
+    for i in range(len(encoded)):
+        X = pd.concat([X, encoded[i]], axis=1)
+    return X
 
 
 def check_ifreal(y: pd.Series) -> bool:
@@ -77,3 +93,11 @@ def split_data(X: pd.DataFrame, y: pd.Series, attribute, value):
     # Split the data based on a particular value of a particular attribute. You may use masking as a tool to split the data.
 
     pass
+
+
+if __name__ == "__main__":
+    X = pd.DataFrame({
+        'color': ['red', 'blue', 'green', 'red', 'blue', 'green'],
+        'size': [1, 2, 3, 4, 5, 6]
+    })
+    print(one_hot_encoding(X))
