@@ -7,6 +7,27 @@ import pandas as pd
 import numpy as np
 
 
+class LabelEncoder:
+    def __init__(self):
+        self.unique_classes = None
+        self.class_to_index = None
+        self.index_to_class = None
+
+    def fit(self, y: pd.Series) -> None:
+        self.unique_classes = np.unique(y)
+        self.class_to_index = {cat: idx for idx,
+                               cat in enumerate(self.unique_classes)}
+        self.index_to_class = {idx: cat for cat,
+                               idx in self.class_to_index.items()}
+
+    def transform(self, y: pd.Series) -> np.ndarray:
+        return np.array([self.class_to_index[cat] for cat in y])
+
+    def fit_transform(self, y: pd.Series) -> np.ndarray:
+        self.fit(y)
+        return self.transform(y)
+
+
 def one_hot_encoding(X: pd.DataFrame) -> pd.DataFrame:
     """
     Function to perform one hot encoding on the input data
