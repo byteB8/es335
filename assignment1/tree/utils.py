@@ -4,6 +4,7 @@ There is no restriction on following the below template, these fucntions are her
 """
 
 import pandas as pd
+import numpy as np
 
 
 def one_hot_encoding(X: pd.DataFrame) -> pd.DataFrame:
@@ -48,8 +49,12 @@ def entropy(Y: pd.Series) -> float:
     """
     Function to calculate the entropy
     """
-
-    pass
+    unique_values = Y.unique()
+    entropy = 0
+    for value in unique_values:
+        p = Y[Y == value].shape[0] / Y.shape[0]
+        entropy += -p * np.log2(p)
+    return entropy
 
 
 def gini_index(Y: pd.Series) -> float:
@@ -107,4 +112,5 @@ if __name__ == "__main__":
         'size': [1, 2, 3, 4, 5, 6]
     })
     # print(one_hot_encoding(X))
-    print(check_ifreal(X['size']))
+    # print(check_ifreal(X['size']))
+    print(entropy(X['color']))
