@@ -34,8 +34,14 @@ def check_ifreal(y: pd.Series) -> bool:
     """
     Function to check if the given series has real or discrete values
     """
+    if y.dtype == 'object':
+        return False
 
-    pass
+    perc_unique_count = len(y.unique()) / len(y)
+    if perc_unique_count > 0.25:
+        return True
+    else:
+        return False
 
 
 def entropy(Y: pd.Series) -> float:
@@ -100,4 +106,5 @@ if __name__ == "__main__":
         'color': ['red', 'blue', 'green', 'red', 'blue', 'green'],
         'size': [1, 2, 3, 4, 5, 6]
     })
-    print(one_hot_encoding(X))
+    # print(one_hot_encoding(X))
+    print(check_ifreal(X['size']))
