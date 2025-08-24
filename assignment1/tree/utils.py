@@ -61,8 +61,13 @@ def gini_index(Y: pd.Series) -> float:
     """
     Function to calculate the gini index
     """
-
-    pass
+    unique_values = Y.unique()
+    temp = 0
+    for value in unique_values:
+        p = Y[Y == value].shape[0] / Y.shape[0]
+        temp += p*p
+    gini_index = 1-temp
+    return gini_index
 
 
 def information_gain(Y: pd.Series, attr: pd.Series, criterion: str) -> float:
@@ -113,4 +118,5 @@ if __name__ == "__main__":
     })
     # print(one_hot_encoding(X))
     # print(check_ifreal(X['size']))
-    print(entropy(X['color']))
+    # print(entropy(X['color']))
+    print(gini_index(X['color']))
