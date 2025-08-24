@@ -98,7 +98,7 @@ def mse(Y: pd.Series) -> float:
     if check_ifreal(Y):
         return np.mean((Y - Y.mean())**2)
     else:
-        return 0
+        raise ValueError("MSE is only defined for real valued targets")
 
 
 def information_gain(Y: pd.Series, attr: pd.Series, criterion: str) -> float:
