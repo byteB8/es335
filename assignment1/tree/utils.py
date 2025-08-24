@@ -70,11 +70,17 @@ def gini_index(Y: pd.Series) -> float:
     return gini_index
 
 
+def mse(Y: pd.Series) -> float:
+    """
+    Function to calculate the mean squared error
+    """
+    return np.mean((Y - Y.mean())**2)
+
+
 def information_gain(Y: pd.Series, attr: pd.Series, criterion: str) -> float:
     """
     Function to calculate the information gain using criterion (entropy, gini index or MSE)
     """
-
     pass
 
 
@@ -119,4 +125,5 @@ if __name__ == "__main__":
     # print(one_hot_encoding(X))
     # print(check_ifreal(X['size']))
     # print(entropy(X['color']))
-    print(gini_index(X['color']))
+    # print(gini_index(X['color']))
+    print(mse(X['size']))
