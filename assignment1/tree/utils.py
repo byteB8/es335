@@ -74,7 +74,10 @@ def mse(Y: pd.Series) -> float:
     """
     Function to calculate the mean squared error
     """
-    return np.mean((Y - Y.mean())**2)
+    if check_ifreal(Y):
+        return np.mean((Y - Y.mean())**2)
+    else:
+        return 0
 
 
 def information_gain(Y: pd.Series, attr: pd.Series, criterion: str) -> float:
