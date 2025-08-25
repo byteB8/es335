@@ -2,3 +2,14 @@ es335Env/
 nbks/
 test.ipynb
 dummy.py
+# cache files
+*.ipynb_checkpoints/
+*.pyc
+*.pyo
+*.pyd
+*.pyw
+*.pyz
+*.pywz
+*.pyzw
+*.pyzwz
+*.pyzwz
