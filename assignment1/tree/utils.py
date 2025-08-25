@@ -3,8 +3,23 @@ You can add your own functions here according to your decision tree implementati
 There is no restriction on following the below template, these fucntions are here to simply help you.
 """
 
+# TODO: convert to numpy only implementation
+
 import pandas as pd
 import numpy as np
+from typing import Literal
+
+
+class Node:
+    def __init__(self, feature_idx=None, threshold=None, left=None, right=None, value=None):
+        self.feature_idx = feature_idx
+        self.threshold = threshold
+        self.left = left
+        self.right = right
+        self.value = value
+
+    def is_leaf(self):
+        return self.value is not None
 
 
 class LabelEncoder:
@@ -60,52 +75,78 @@ def check_ifreal(y: pd.Series) -> bool:
         return False
 
     perc_unique_count = len(y.unique()) / len(y)
-    if perc_unique_count > 0.25:
+    if perc_unique_count > 0.20:
         return True
     else:
         return False
 
 
-def entropy(Y: pd.Series) -> float:
+def entropy(y: pd.Series) -> float:
     """
     Function to calculate the entropy
     """
-    unique_values = Y.unique()
+    unique_values = y.unique()
     entropy = 0
     for value in unique_values:
-        p = Y[Y == value].shape[0] / Y.shape[0]
+        p = y[y == value].shape[0] / y.shape[0]
         entropy += -p * np.log2(p)
     return entropy
 
 
-def gini_index(Y: pd.Series) -> float:
+def gini_index(y: pd.Series) -> float:
     """
     Function to calculate the gini index
     """
-    unique_values = Y.unique()
+    unique_values = y.unique()
     temp = 0
     for value in unique_values:
-        p = Y[Y == value].shape[0] / Y.shape[0]
+        p = y[y == value].shape[0] / y.shape[0]
         temp += p*p
     gini_index = 1-temp
     return gini_index
 
 
-def mse(Y: pd.Series) -> float:
+def mse(y: pd.Series) -> float:
     """
     Function to calculate the mean squared error
     """
-    if check_ifreal(Y):
-        return np.mean((Y - Y.mean())**2)
-    else:
-        raise ValueError("MSE is only defined for real valued targets")
+    return np.mean((y - y.mean())**2)
 
 
-def information_gain(Y: pd.Series, attr: pd.Series, criterion: str) -> float:
+def information_gain(y: pd.Series, left_idx: np.ndarray, right_idx: np.ndarray, criterion: Literal["information_gain", "gini_index"]) -> float:
     """
     Function to calculate the information gain using criterion (entropy, gini index or MSE)
     """
-    pass
+    left_idx = left_idx.tolist()
+    right_idx = right_idx.tolist()
+    if criterion == "information_gain":
+        parent_entropy = entropy(y)
+        left_entropy = entropy(y.iloc[left_idx])
+        right_entropy = entropy(y.iloc[right_idx])
+        child_entropy = (len(left_idx) / len(y)) * left_entropy + \
+            (len(right_idx) / len(y)) * right_entropy
+        return parent_entropy - child_entropy
+    elif criterion == "gini_index":
+        parent_gini = gini_index(y)
+        left_gini = gini_index(y.iloc[left_idx])
+        right_gini = gini_index(y.iloc[right_idx])
+        child_gini = (len(left_idx) / len(y)) * left_gini + \
+            (len(right_idx) / len(y)) * right_gini
+        return parent_gini - child_gini
+
+
+def mse_reduction(y: pd.Series, left_idx: np.ndarray, right_idx: np.ndarray) -> float:
+    """
+    Function to calculate the mean squared error reduction
+    """
+    left_idx = left_idx.tolist()
+    right_idx = right_idx.tolist()
+    parent_mse = mse(y)
+    left_mse = mse(y.iloc[left_idx])
+    right_mse = mse(y.iloc[right_idx])
+    child_mse = (len(left_idx) / len(y)) * left_mse + \
+        (len(right_idx) / len(y)) * right_mse
+    return parent_mse - child_mse
 
 
 def opt_split_attribute(X: pd.DataFrame, y: pd.Series, criterion, features: pd.Series):
