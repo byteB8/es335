@@ -1,2 +1,18 @@
 es335Env/
 nbks/
+test.ipynb
+dummy.py
+assignment1/HAR/
+assignment1/trail_ML-main/
+assignment1/auto-mpg/
+# cache files
+*.ipynb_checkpoints/
+*.pyc
+*.pyo
+*.pyd
+*.pyw
+*.pyz
+*.pywz
+*.pyzw
+*.pyzwz
+*.pyzwz
