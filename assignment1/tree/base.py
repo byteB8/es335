@@ -12,7 +12,7 @@ from typing import Literal
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from tree.utils import *
+from .utils import *
 
 np.random.seed(42)
 
