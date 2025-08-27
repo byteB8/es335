@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from tree.base import DecisionTree
 from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeRegressor
 from metrics import *
 
 np.random.seed(42)
@@ -45,5 +46,42 @@ tree.fit(train_X, train_y)
 
 y_hat = tree.predict(test_X)
 
-print(rmse(y_hat, test_y))
-print(mae(y_hat, test_y))
+print("RMSE using my implementation: ", rmse(y_hat, test_y))
+print("MAE using my implementation: ", mae(y_hat, test_y))
+
+
+# With scikit learn
+
+print("###########################")
+print("With scikit learn")
+print("###########################")
+
+# Reading the data
+url = 'https://archive.ics.uci.edu/ml/machine-learning-databases/auto-mpg/auto-mpg.data'
+data = pd.read_csv(url, delim_whitespace=True, header=None,
+                   names=["mpg", "cylinders", "displacement", "horsepower", "weight",
+                          "acceleration", "model year", "origin", "car name"])
+
+
+data.drop(columns=["car name"], inplace=True)
+
+data.replace('?', np.nan, inplace=True)
+
+data.dropna(inplace=True)
+
+data = data.iloc[:40]  # for testing
+
+X = data.iloc[:, :-1]
+y = data.iloc[:, -1]
+
+train_X, test_X, train_y, test_y = train_test_split(
+    X, y, test_size=0.45, random_state=42)
+
+# train the model
+tree = DecisionTreeRegressor(max_depth=3)
+tree.fit(train_X, train_y)
+
+y_hat = tree.predict(test_X)
+
+print("RMSE using scikit learn: ", rmse(y_hat, test_y))
+print("MAE using scikit learn: ", mae(y_hat, test_y))
