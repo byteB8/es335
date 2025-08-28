@@ -2,10 +2,12 @@ es335Env/
 nbks/
 test.ipynb
 dummy.py
-assignment1/HAR/
 assignment1/trail_ML-main/
 assignment1/auto-mpg/
 assignment1/Task3/
+assignment1/HAR/Combined/
+assignment1/HAR/UCI HAR Dataset/
+
 # cache files
 *.ipynb_checkpoints/
 *.pyc
