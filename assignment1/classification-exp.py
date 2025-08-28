@@ -16,7 +16,7 @@ plt.scatter(X[:, 0], X[:, 1], c=y)
 
 # Write the code for Q2 a) and b) below. Show your results.
 
-# Question 2a
+# Question 1a
 
 X_df = pd.DataFrame(X, columns=["X1", "X2"])
 y_df = pd.Series(y, name="y")
@@ -48,7 +48,7 @@ print("Precision for class 0: ", precision(y_hat, test_y, 0))
 print("Recall for class 0: ", recall(y_hat, test_y, 0))
 
 
-# Question 2b
+# Question 1b
 
 X, y = make_classification(
     n_features=2, n_redundant=0, n_informative=2, random_state=1, n_clusters_per_class=2, class_sep=0.5)
