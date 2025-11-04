@@ -20,3 +20,6 @@ assignment2/test2.ipynb
 *.pyzw
 *.pyzwz
 *.pyzwz
+
+assignment3/p1/checkpoints_sherlock_lstm/
+assignment3/p1/data/
