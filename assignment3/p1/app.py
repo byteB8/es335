@@ -8,6 +8,8 @@ import pandas as pd
 from models import MLPNextWord, RNNNextWord, GRUNextWord, LSTMNextWord
 from infer import generate_words, get_top_k_probs, sample_next
 
+# Get the directory where app.py is located
+APP_DIR = os.path.dirname(os.path.abspath(__file__))
 
 st.set_page_config(page_title="Next-word Visualizer",
                    page_icon="🧠", layout="wide")
@@ -25,6 +27,8 @@ with st.sidebar:
     )
 
     checkpoint_dir = "checkpoints_sherlock" if dataset_choice == "Sherlock" else "checkpoints_cpp"
+    checkpoint_dir = os.path.join(
+        APP_DIR, checkpoint_dir)  # Make path absolute
     ckpt_path = os.path.join(checkpoint_dir, "best.pt")
     vocab_path = os.path.join(checkpoint_dir, "vocab.json")
 
@@ -95,7 +99,8 @@ with st.sidebar:
     )
 
     st.divider()
-    st.caption(f"📁 Checkpoint: {checkpoint_dir}")
+    checkpoint_dir_display = "checkpoints_sherlock" if dataset_choice == "Sherlock" else "checkpoints_cpp"
+    st.caption(f"📁 Checkpoint: {checkpoint_dir_display}")
     if not os.path.exists(ckpt_path):
         st.error(f"⚠️ Checkpoint not found: {ckpt_path}")
     if not os.path.exists(vocab_path):
@@ -136,8 +141,11 @@ def load_model_and_vocab(checkpoint_dir, model_type):
 
     model_class = model_classes.get(model_type, MLPNextWord)
 
+    # Determine model config based on checkpoint directory name
+    checkpoint_dir_name = os.path.basename(checkpoint_dir)
+
     # Create model (you may need to adjust these based on your training config)
-    if checkpoint_dir == "checkpoints_sherlock":
+    if checkpoint_dir_name == "checkpoints_sherlock":
         model = model_class(
             vocab_size=len(stoi),
             block_size=context_len,
@@ -147,7 +155,7 @@ def load_model_and_vocab(checkpoint_dir, model_type):
             activation="relu",
             dropout=0.0,
         ).to(device)
-    elif checkpoint_dir == "checkpoints_cpp":
+    elif checkpoint_dir_name == "checkpoints_cpp":
         model = model_class(
             vocab_size=len(stoi),
             block_size=context_len,
@@ -183,8 +191,10 @@ if not prompt_tokens:
 model, stoi, itos = load_model_and_vocab(checkpoint_dir, model_type)
 
 if model is None:
+    checkpoint_dir_name = os.path.basename(checkpoint_dir)
     st.error(
-        f"Failed to load model from {checkpoint_dir}. Make sure checkpoints exist.")
+        f"Failed to load model from {checkpoint_dir_name}. Make sure checkpoints exist.")
+    st.info(f"Expected paths:\n- {ckpt_path}\n- {vocab_path}")
     st.stop()
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
